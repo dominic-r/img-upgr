@@ -1,4 +1,4 @@
-.PHONY: build test clean run fmt lint check-fmt check-mod
+.PHONY: build test clean run fmt check-fmt lint check-fmt check-mod
 
 # Variables
 BINARY_NAME=img-upgr
@@ -59,6 +59,24 @@ ci-update:
 fmt:
 	@echo "Formatting Go code..."
 	go fmt ./...
+
+# Check if any modified files need formatting
+check-fmt:
+	@echo "Checking formatting of modified files..."
+	@MODIFIED=$$(git diff --name-only --diff-filter=ACMR | grep "\.go$$") && \
+	if [ -n "$$MODIFIED" ]; then \
+		UNFORMATTED=$$(gofmt -l $$MODIFIED) && \
+		if [ -n "$$UNFORMATTED" ]; then \
+			echo "The following modified files are not formatted correctly:"; \
+			echo "$$UNFORMATTED"; \
+			echo "Run 'make fmt' to format them."; \
+			exit 1; \
+		else \
+			echo "All modified files are formatted correctly."; \
+		fi \
+	else \
+		echo "No modified Go files found."; \
+	fi
 
 # Run golangci-lint
 lint:
