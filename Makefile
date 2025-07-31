@@ -1,4 +1,4 @@
-.PHONY: build test clean run
+.PHONY: build test clean run fmt lint check-fmt check-mod
 
 # Variables
 BINARY_NAME=img-upgr
@@ -54,6 +54,34 @@ ci-update:
 	@if [ -z "$$IMG_UPGR_GL_REPO" ]; then echo "ERROR: IMG_UPGR_GL_REPO is not set"; exit 1; fi
 	@if [ -z "$$IMG_UPGR_GL_EMAIL" ]; then echo "ERROR: IMG_UPGR_GL_EMAIL is not set"; exit 1; fi
 	./${BINARY_NAME} scan --create-mr
+
+# Format Go code
+fmt:
+	@echo "Formatting Go code..."
+	go fmt ./...
+
+# Run golangci-lint
+lint:
+	@echo "Running golangci-lint..."
+	golangci-lint run --timeout 5m
+
+# Check if code is formatted correctly
+check-fmt:
+	@echo "Checking Go formatting..."
+	@UNFORMATTED=$$(gofmt -l .) && \
+	if [ -n "$$UNFORMATTED" ]; then \
+		echo "The following files are not formatted correctly:"; \
+		echo "$$UNFORMATTED"; \
+		exit 1; \
+	else \
+		echo "All files are formatted correctly."; \
+	fi
+
+# Check if go.mod and go.sum are tidy
+check-mod:
+	@echo "Checking go.mod and go.sum..."
+	@go mod tidy
+	@git diff --exit-code go.mod go.sum || (echo "go.mod or go.sum are not tidy. Run 'go mod tidy' locally and commit changes." && exit 1)
 
 # Check environment variables
 check-env:

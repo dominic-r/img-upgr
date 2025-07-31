@@ -147,12 +147,16 @@ func (c *Client) FetchAllTagsWithContext(ctx context.Context, repo string) ([]st
 
 		// Check response status
 		if resp.StatusCode != http.StatusOK {
-			resp.Body.Close()
+			if err := resp.Body.Close(); err != nil {
+				logger.Warn("Failed to close response body: %v", err)
+			}
 			return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 		}
 
 		body, err := io.ReadAll(resp.Body)
-		resp.Body.Close()
+		if err := resp.Body.Close(); err != nil {
+			logger.Warn("Failed to close response body: %v", err)
+		}
 		if err != nil {
 			return nil, fmt.Errorf("error reading response: %w", err)
 		}
@@ -192,7 +196,11 @@ func (c *Client) FetchTagDetails(repo, tag string) (*DockerHubTag, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error fetching tag details: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			logger.Warn("Failed to close response body: %v", err)
+		}
+	}()
 
 	// Check response status
 	if resp.StatusCode == http.StatusNotFound {

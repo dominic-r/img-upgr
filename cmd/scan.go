@@ -305,7 +305,7 @@ func updateFileContent(update UpdatedImage) error {
 	}
 
 	// Update content with only this specific image
-	newContent := strings.Replace(string(content), update.OldImage, update.NewImage, -1)
+	newContent := strings.ReplaceAll(string(content), update.OldImage, update.NewImage)
 
 	// Write updated content back to file
 	if err := os.WriteFile(update.FilePath, []byte(newContent), 0644); err != nil {

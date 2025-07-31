@@ -141,7 +141,11 @@ func (c *Client) doRequest(ctx context.Context, method, path string, body interf
 	if err != nil {
 		return fmt.Errorf("error sending request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			logger.Warn("Failed to close response body: %v", err)
+		}
+	}()
 
 	// Check response status
 	if resp.StatusCode >= 400 {
@@ -354,7 +358,11 @@ func (c *Client) GetFile(branch, filePath string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error fetching file: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			logger.Warn("Failed to close response body: %v", err)
+		}
+	}()
 
 	// Check response status
 	if resp.StatusCode == http.StatusNotFound {

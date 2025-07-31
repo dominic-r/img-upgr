@@ -196,9 +196,15 @@ func (l *Logger) log(level LogLevel, format string, args ...interface{}) {
 
 	// Use errorOutput for ERROR and FATAL levels if set
 	if (level == ERROR || level == FATAL) && l.errorOutput != nil {
-		fmt.Fprint(l.errorOutput, logLine)
+		if _, err := fmt.Fprint(l.errorOutput, logLine); err != nil {
+			// Can't do much if logging itself fails, but at least try to write to stderr
+			_, _ = fmt.Fprintf(os.Stderr, "Error writing to log: %v\n", err)
+		}
 	} else {
-		fmt.Fprint(l.output, logLine)
+		if _, err := fmt.Fprint(l.output, logLine); err != nil {
+			// Can't do much if logging itself fails, but at least try to write to stderr
+			_, _ = fmt.Fprintf(os.Stderr, "Error writing to log: %v\n", err)
+		}
 	}
 
 	if level == FATAL {

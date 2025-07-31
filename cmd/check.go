@@ -349,7 +349,7 @@ func createMergeRequestsForUpdates(ctx context.Context, cfg *config.Config, upda
 
 		// Update content with only this specific image
 		logger.Info("Updating %s: %s → %s", update.ServiceName, update.OldImage, update.NewImage)
-		newContent := strings.Replace(string(content), update.OldImage, update.NewImage, -1)
+		newContent := strings.ReplaceAll(string(content), update.OldImage, update.NewImage)
 
 		// Write updated content back to file
 		if err := os.WriteFile(filePath, []byte(newContent), 0644); err != nil {
