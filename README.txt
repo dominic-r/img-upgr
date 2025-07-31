@@ -2,7 +2,7 @@ Docker Image Upgrader:
 
 This quick tool is ran in CI and allows me to update the tags of not-exactly-semver deps without wasting time on RenovateBot custom rules.
 
-This is how it works:
+How it works:
 
 1) Scans through docker-compose.yml files of env IMG_UPGR_SCANDIR to find `image:` lines;
 2) Extracts all images and attempts to divide them in prefix/suffix and semver.
