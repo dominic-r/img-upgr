@@ -1,6 +1,6 @@
 Docker Image Upgrader:
 
-This quick tool is ran in CI and allows me to update the tags of not-exactly-semver deps without wasting time on RenovateBot custom rules.
+This (very alpha) quick tool is ran in CI and allows me to update the tags of not-exactly-semver deps without wasting time on RenovateBot custom rules.
 
 How it works:
 
