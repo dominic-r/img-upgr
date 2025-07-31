@@ -1,0 +1,5 @@
+# Binary when built with `make build`
+img-upgr
+
+# OS files
+.DS_Store
