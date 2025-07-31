@@ -1,4 +1,4 @@
-.PHONY: build test clean run fmt lint check-fmt check-mod help
+.PHONY: build clean run fmt lint check-fmt check-mod help test-race test
 
 # Variables
 BINARY_NAME = img-upgr
@@ -13,10 +13,6 @@ all: build
 build:
 	@echo "Building ${BINARY_NAME}..."
 	go build ${LDFLAGS} -o ${BINARY_NAME}
-
-test:
-	@echo "Running tests..."
-	go test -v ./...
 
 clean:
 	@echo "Cleaning up..."
@@ -47,6 +43,14 @@ check-mod:
 	@go mod tidy
 	@git diff --exit-code go.mod go.sum || (echo "go.mod or go.sum are not tidy. Run 'go mod tidy' locally and commit changes." && exit 1)
 
+test-race:
+	@echo "Running tests with race detection..."
+	CGO_ENABLED=1 go test -race -v ./...
+
+test: 
+	@echo "Running tests..."
+	go test -v ./...
+
 help:
 	@echo "Available targets:"
 	@echo "  build       - Build the binary"
@@ -58,3 +62,5 @@ help:
 	@echo "  check-fmt   - Check code formatting"
 	@echo "  check-mod   - Check if go.mod and go.sum are tidy"
 	@echo "  help        - Show this help message"
+	@echo "  test-race   - Run tests with race detection"
+	@echo "  test        - Run tests"
