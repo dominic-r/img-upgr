@@ -12,7 +12,6 @@ build:
     - make build
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "master"
 
 golangci-lint:
   stage: static-analysis
@@ -22,7 +21,6 @@ golangci-lint:
     - make lint
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "master"
 
 go-mod-tidy:
   stage: static-analysis
@@ -32,7 +30,6 @@ go-mod-tidy:
     - make check-mod
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "master"
 
 go-fmt:
   stage: static-analysis
@@ -42,7 +39,6 @@ go-fmt:
     - make check-fmt
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "master"
 
 go-test:
   stage: unit-tests
@@ -52,7 +48,6 @@ go-test:
     - make test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "master"
 
 go-test-race:
   stage: unit-tests
@@ -62,4 +57,3 @@ go-test-race:
     - make test-race
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "master"
